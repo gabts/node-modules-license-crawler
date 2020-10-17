@@ -1,15 +1,20 @@
 import * as fs from "fs";
 import * as path from "path";
 
-const data: {
-  modules: { [key: string]: null | number };
+interface ModulesLicenseData {
+  modules: {
+    [key: string]: null | number;
+  };
   licenses: string[];
-} = {
+}
+
+const data: ModulesLicenseData = {
   modules: {},
   licenses: [],
 };
 
 let nodeModulesPath = path.resolve(".", "node_modules");
+let packageJsonPath = path.resolve(".", "package.json");
 
 function readPackageJson(packageJsonPath: string): null | any {
   if (fs.existsSync(packageJsonPath)) {
@@ -87,27 +92,22 @@ function crawl(dependencies: { [key: string]: string }): void {
  */
 function nodeModulesLicenseCrawler(args: {
   rootPath?: string;
-  outputPath?: string;
-}): void {
-  const json = readPackageJson(
-    path.resolve(args.rootPath || ".", "package.json")
-  );
-
+}): ModulesLicenseData {
   if (args.rootPath) {
     nodeModulesPath = path.resolve(args.rootPath, "node_modules");
+    packageJsonPath = path.resolve(args.rootPath, "package.json");
   }
 
   if (!fs.existsSync(nodeModulesPath)) {
     throw new Error("Missing node_modules");
   }
 
+  const json = readPackageJson(packageJsonPath);
   if (json.dependencies) {
     crawl(json.dependencies);
   }
 
-  if (args.outputPath) {
-    fs.writeFileSync(args.outputPath, JSON.stringify(data, null, 2));
-  }
+  return data;
 }
 
 export = nodeModulesLicenseCrawler;
