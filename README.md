@@ -8,15 +8,15 @@ Crawls dependencies recursively from your package.json file and finds license te
 npm install node-modules-license-crawler
 ```
 
-## Usage
+## Sample usage
 
 ```js
+const fs = require("fs");
 const nodeModulesLicenseCrawler = require("node-modules-license-crawler");
 
-nodeModulesLicenseCrawler({
-  rootPath: ".",
-  outputPath: "./output.json",
-});
+const json = nodeModulesLicenseCrawler();
+
+fs.writeFileSync("./licenses.json", JSON.stringify(json));
 ```
 
 ## License
