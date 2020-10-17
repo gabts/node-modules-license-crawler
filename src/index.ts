@@ -93,7 +93,7 @@ function crawl(dependencies: { [key: string]: string }): void {
 function nodeModulesLicenseCrawler(args: {
   rootPath?: string;
 }): ModulesLicenseData {
-  if (args.rootPath) {
+  if (args?.rootPath) {
     nodeModulesPath = path.resolve(args.rootPath, "node_modules");
     packageJsonPath = path.resolve(args.rootPath, "package.json");
   }
