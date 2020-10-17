@@ -21,7 +21,9 @@ fs.writeFileSync("./licenses.json", JSON.stringify(json));
 
 ## Sample output
 
-If `[react](https://github.com/facebook/react)` was your only dependency the output would look like this.
+If [`react`](https://github.com/facebook/react) was your only dependency the output would look like this. The modules value refers to an index in the licenses array. This is to save some space as you often have a few modules with the same exact license content (like `react` and `react-is` does here).
+
+Modules where we couldn't find a license have value `null` instead of an index number.
 
 ```json
 {
@@ -34,11 +36,11 @@ If `[react](https://github.com/facebook/react)` was your only dependency the out
     "react-is@16.13.1": 0
   },
   "licenses": [
-    "MIT License\n\nCopyright (c) Facebook, Inc. and its affiliates.\n\nPermission is hereby granted...",
-    "The MIT License (MIT)\n\nCopyright (c) 2015 Andres Suarez <zertosh@gmail.com>\n\nPermission is hereby granted...",
-    "The MIT License (MIT)\n\nCopyright (c) 2014, 2015, 2016, 2017, 2018 Simon Lydell\n\nPermission is hereby granted...",
-    "The MIT License (MIT)\n\nCopyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)\n\nPermission is hereby granted...",
-    "MIT License\n\nCopyright (c) 2013-present, Facebook, Inc.\n\nPermission is hereby granted..."
+    "MIT License\n\nCopyright (c) Facebook, Inc. and its affiliates.\n\nPe...",
+    "The MIT License (MIT)\n\nCopyright (c) 2015 Andres Suarez <zertosh@gm...",
+    "The MIT License (MIT)\n\nCopyright (c) 2014, 2015, 2016, 2017, 2018 S...",
+    "The MIT License (MIT)\n\nCopyright (c) Sindre Sorhus <sindresorhus@gm...",
+    "MIT License\n\nCopyright (c) 2013-present, Facebook, Inc.\n\nPermissi..."
   ]
 }
 ```
