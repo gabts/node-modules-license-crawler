@@ -18,6 +18,9 @@
   },
   "author": "Gabriel Toll Stålbom <gabtost@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "test": "node tests/index.js"
+  },
   "devDependencies": {
     "@types/node": "^14.11.10",
     "prettier": "^2.1.2",

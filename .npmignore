@@ -2,5 +2,6 @@
 .prettierrc
 node_modules
 src
+tests
 tsconfig.json
 yarn.lock
