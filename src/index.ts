@@ -1,20 +1,17 @@
 import * as fs from "fs";
 import * as path from "path";
 
-interface ModulesLicenseData {
-  modules: {
-    [key: string]: null | number;
-  };
-  licenses: string[];
-}
-
-const data: ModulesLicenseData = {
-  modules: {},
-  licenses: [],
-};
-
 let nodeModulesPath = path.resolve(".", "node_modules");
 let packageJsonPath = path.resolve(".", "package.json");
+
+const modules: {
+  [key: string]: {
+    license: null | string;
+    text: null | number;
+  };
+} = {};
+
+const texts: string[] = [];
 
 function readPackageJson(packageJsonPath: string): null | any {
   if (fs.existsSync(packageJsonPath)) {
@@ -56,28 +53,33 @@ function crawl(dependencies: { [key: string]: string }): void {
       continue;
     }
 
-    const id = `${name}@${json.version}`;
+    const id = `${name}:::${json.version}`;
 
     // If module has already been added, skip to next
-    if (typeof data.modules[id] === "number") {
+    if (modules[id]) {
       continue;
     }
+
+    modules[id] = {
+      text: null,
+      license: json.license || null,
+    };
 
     const license = getLicense(modulePath);
 
     if (license) {
-      let licenseIndex = data.licenses.indexOf(license);
+      let licenseIndex = texts.indexOf(license);
       if (licenseIndex === -1) {
-        data.licenses.push(license);
-        licenseIndex = data.licenses.length - 1;
+        texts.push(license);
+        licenseIndex = texts.length - 1;
       }
 
-      data.modules[id] = licenseIndex;
+      modules[id].text = licenseIndex;
     }
 
     // If a license wasn't found, assign as null
-    if (typeof data.modules[id] !== "number") {
-      data.modules[id] = null;
+    if (typeof modules[id].text !== "number") {
+      modules[id].text = null;
     }
 
     if (json.dependencies) {
@@ -90,9 +92,7 @@ function crawl(dependencies: { [key: string]: string }): void {
  * Crawls dependencies recursively from your package.json file and finds license
  * texts from packages in node_modules.
  */
-function nodeModulesLicenseCrawler(args: {
-  rootPath?: string;
-}): ModulesLicenseData {
+function nodeModulesLicenseCrawler(args: { rootPath?: string }) {
   if (args?.rootPath) {
     nodeModulesPath = path.resolve(args.rootPath, "node_modules");
     packageJsonPath = path.resolve(args.rootPath, "package.json");
@@ -107,7 +107,23 @@ function nodeModulesLicenseCrawler(args: {
     crawl(json.dependencies);
   }
 
-  return data;
+  return {
+    modules: Object.keys(modules)
+      .map((key) => {
+        const [name, version] = key.split(":::");
+
+        return {
+          name,
+          version,
+          license: modules[key].license,
+          text: modules[key].text,
+        };
+      })
+      .sort((a, b) => {
+        return a.name > b.name ? 1 : a.name < b.name ? -1 : 0;
+      }),
+    texts,
+  };
 }
 
 export = nodeModulesLicenseCrawler;
