@@ -13,7 +13,13 @@ const modules: {
 
 const texts: string[] = [];
 
-function readPackageJson(packageJsonPath: string): null | any {
+function readPackageJson(
+  packageJsonPath: string
+): null | {
+  dependencies: { [key: string]: string };
+  license?: string;
+  version: string;
+} {
   if (fs.existsSync(packageJsonPath)) {
     try {
       return JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
@@ -36,7 +42,7 @@ function getLicense(modulePath: string): null | string {
   }
 
   const json = readPackageJson(path.resolve(modulePath, "package.json"));
-  if (json.license) {
+  if (json?.license) {
     return json.license;
   }
 
@@ -103,7 +109,7 @@ function nodeModulesLicenseCrawler(args: { rootPath?: string }) {
   }
 
   const json = readPackageJson(packageJsonPath);
-  if (json.dependencies) {
+  if (json?.dependencies) {
     crawl(json.dependencies);
   }
 
