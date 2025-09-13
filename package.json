@@ -16,7 +16,7 @@
   "bugs": {
     "url": "https://github.com/gabts/node-modules-license-crawler/issues"
   },
-  "author": "Gabriel Toll Stålbom <gabtost@gmail.com>",
+  "author": "gabts",
   "license": "MIT",
   "scripts": {
     "test": "node tests/index.js"
